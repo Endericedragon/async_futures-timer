@@ -3,14 +3,14 @@
 //! This module contains the `Delay` type which is a future that will resolve
 //! at a particular point in the future.
 
-use std::fmt;
-use std::future::Future;
-use std::pin::Pin;
-use std::sync::atomic::AtomicUsize;
-use std::sync::atomic::Ordering::SeqCst;
-use std::sync::{Arc, Mutex};
-use std::task::{Context, Poll};
-use std::time::{Duration, Instant};
+use core::fmt;
+use core::future::Future;
+use core::pin::Pin;
+use async_std::sync::atomic::AtomicUsize;
+use async_std::sync::atomic::Ordering::SeqCst;
+use async_std::sync::{Arc, Mutex};
+use core::task::{Context, Poll};
+use async_std::time::{Duration, Instant};
 
 use super::arc_list::Node;
 use super::AtomicWaker;

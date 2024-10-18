@@ -1,13 +1,13 @@
-use std::future::Future;
-use std::io;
-use std::mem::{self, ManuallyDrop};
-use std::pin::Pin;
-use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::Arc;
-use std::task::{Context, RawWaker, RawWakerVTable, Waker};
-use std::thread;
-use std::thread::Thread;
-use std::time::Instant;
+use core::future::Future;
+use async_std::io;
+use core::mem::{self, ManuallyDrop};
+use core::pin::Pin;
+use async_std::sync::atomic::{AtomicBool, Ordering};
+use async_std::sync::Arc;
+use core::task::{Context, RawWaker, RawWakerVTable, Waker};
+use async_std::thread;
+use async_std::thread::Thread;
+use async_std::time::Instant;
 
 use super::{Timer, TimerHandle};
 

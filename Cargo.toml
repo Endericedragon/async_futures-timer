@@ -1,11 +1,11 @@
 [package]
-name = "futures-timer"
+name = "async_futures-timer"
 version = "3.0.3"
 authors = ["Alex Crichton <alex@alexcrichton.com>"]
 edition = "2018"
 license = "MIT/Apache-2.0"
 readme = "README.md"
-repository = "https://github.com/async-rs/futures-timer"
+repository = "https://github.com/Endericedragon/async_futures-timer"
 homepage = "https://github.com/async-rs/futures-timer"
 documentation = "https://docs.rs/futures-timer"
 description = """
@@ -13,15 +13,4 @@ Timeouts for futures.
 """
 
 [dependencies]
-gloo-timers = { version = "0.2.0", features = ["futures"], optional = true }
-send_wrapper = { version = "0.4.0", optional = true }
-
-[dev-dependencies]
-async-std = { version = "1.0.1", features = ["attributes"] }
-futures = "0.3.1"
-
-[features]
-wasm-bindgen = [
-    "gloo-timers",
-    "send_wrapper"
-]
+async_std = { path = "../async_std" }

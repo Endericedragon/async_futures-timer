@@ -1,6 +1,6 @@
-use std::cmp::Ordering;
-use std::sync::Arc;
-use std::time::Instant;
+use core::cmp::Ordering;
+use async_std::sync::Arc;
+use async_std::time::Instant;
 
 use super::{Node, ScheduledTimer};
 

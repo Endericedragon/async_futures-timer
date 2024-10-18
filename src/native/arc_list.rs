@@ -1,10 +1,11 @@
 //! An atomically managed intrusive linked list of `Arc` nodes
 
-use std::marker;
-use std::ops::Deref;
-use std::sync::atomic::Ordering::SeqCst;
-use std::sync::atomic::{AtomicBool, AtomicPtr};
-use std::sync::Arc;
+use core::marker;
+use core::ops::Deref;
+// Using async_std from ZFL instead of standard rust-std
+use async_std::sync::atomic::Ordering::SeqCst;
+use async_std::sync::atomic::{AtomicBool, AtomicPtr};
+use async_std::sync::Arc;
 
 pub struct ArcList<T> {
     list: AtomicPtr<Node<T>>,
@@ -112,9 +113,9 @@ pub struct Node<T> {
 }
 
 impl<T> Node<T> {
-    const EMPTY: *mut Node<T> = std::ptr::null_mut();
+    const EMPTY: *mut Node<T> = core::ptr::null_mut();
 
-    const SEALED: *mut Node<T> = std::ptr::null_mut::<Node<T>>().wrapping_add(1);
+    const SEALED: *mut Node<T> = core::ptr::null_mut::<Node<T>>().wrapping_add(1);
 
     pub fn new(data: T) -> Node<T> {
         Node {

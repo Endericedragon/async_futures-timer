@@ -8,7 +8,9 @@
 //! Note that this heap is not at all optimized right now, it should hopefully
 //! just work.
 
-use std::mem;
+
+use core::mem;
+use async_std::collections::Vec;
 
 pub struct Heap<T> {
     // Binary heap of items, plus the slab index indicating what position in the
@@ -209,142 +211,5 @@ fn set_index<T>(slab: &mut Vec<SlabSlot<T>>, slab_slot: usize, val: T) {
     match slab[slab_slot] {
         SlabSlot::Full { ref mut value } => *value = val,
         SlabSlot::Empty { .. } => panic!(),
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::Heap;
-
-    #[test]
-    fn simple() {
-        let mut h = Heap::new();
-        h.push(1);
-        h.push(2);
-        h.push(8);
-        h.push(4);
-        assert_eq!(h.pop(), Some(1));
-        assert_eq!(h.pop(), Some(2));
-        assert_eq!(h.pop(), Some(4));
-        assert_eq!(h.pop(), Some(8));
-        assert_eq!(h.pop(), None);
-        assert_eq!(h.pop(), None);
-    }
-
-    #[test]
-    fn simple2() {
-        let mut h = Heap::new();
-        h.push(5);
-        h.push(4);
-        h.push(3);
-        h.push(2);
-        h.push(1);
-        assert_eq!(h.pop(), Some(1));
-        h.push(8);
-        assert_eq!(h.pop(), Some(2));
-        h.push(1);
-        assert_eq!(h.pop(), Some(1));
-        assert_eq!(h.pop(), Some(3));
-        assert_eq!(h.pop(), Some(4));
-        h.push(5);
-        assert_eq!(h.pop(), Some(5));
-        assert_eq!(h.pop(), Some(5));
-        assert_eq!(h.pop(), Some(8));
-    }
-
-    #[test]
-    fn remove() {
-        let mut h = Heap::new();
-        h.push(5);
-        h.push(4);
-        h.push(3);
-        let two = h.push(2);
-        h.push(1);
-        assert_eq!(h.pop(), Some(1));
-        assert_eq!(h.remove(two), 2);
-        h.push(1);
-        assert_eq!(h.pop(), Some(1));
-        assert_eq!(h.pop(), Some(3));
-    }
-
-    fn vec2heap<T: Ord>(v: Vec<T>) -> Heap<T> {
-        let mut h = Heap::new();
-        for t in v {
-            h.push(t);
-        }
-        h
-    }
-
-    #[test]
-    fn test_peek_and_pop() {
-        let data = vec![2, 4, 6, 2, 1, 8, 10, 3, 5, 7, 0, 9, 1];
-        let mut sorted = data.clone();
-        sorted.sort();
-        let mut heap = vec2heap(data);
-        while heap.peek().is_some() {
-            assert_eq!(heap.peek().unwrap(), sorted.first().unwrap());
-            assert_eq!(heap.pop().unwrap(), sorted.remove(0));
-        }
-    }
-
-    #[test]
-    fn test_push() {
-        let mut heap = Heap::new();
-        heap.push(-2);
-        heap.push(-4);
-        heap.push(-9);
-        assert!(*heap.peek().unwrap() == -9);
-        heap.push(-11);
-        assert!(*heap.peek().unwrap() == -11);
-        heap.push(-5);
-        assert!(*heap.peek().unwrap() == -11);
-        heap.push(-27);
-        assert!(*heap.peek().unwrap() == -27);
-        heap.push(-3);
-        assert!(*heap.peek().unwrap() == -27);
-        heap.push(-103);
-        assert!(*heap.peek().unwrap() == -103);
-    }
-
-    fn check_to_vec(mut data: Vec<i32>) {
-        let mut heap = Heap::new();
-        for data in data.iter() {
-            heap.push(*data);
-        }
-        data.sort();
-        let mut v = Vec::new();
-        while let Some(i) = heap.pop() {
-            v.push(i);
-        }
-        assert_eq!(v, data);
-    }
-
-    #[test]
-    fn test_to_vec() {
-        check_to_vec(vec![]);
-        check_to_vec(vec![5]);
-        check_to_vec(vec![3, 2]);
-        check_to_vec(vec![2, 3]);
-        check_to_vec(vec![5, 1, 2]);
-        check_to_vec(vec![1, 100, 2, 3]);
-        check_to_vec(vec![1, 3, 5, 7, 9, 2, 4, 6, 8, 0]);
-        check_to_vec(vec![2, 4, 6, 2, 1, 8, 10, 3, 5, 7, 0, 9, 1]);
-        check_to_vec(vec![9, 11, 9, 9, 9, 9, 11, 2, 3, 4, 11, 9, 0, 0, 0, 0]);
-        check_to_vec(vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-        check_to_vec(vec![10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]);
-        check_to_vec(vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 1, 2]);
-        check_to_vec(vec![5, 4, 3, 2, 1, 5, 4, 3, 2, 1, 5, 4, 3, 2, 1]);
-    }
-
-    #[test]
-    fn test_empty_pop() {
-        let mut heap = Heap::<i32>::new();
-        assert!(heap.pop().is_none());
-    }
-
-    #[test]
-    fn test_empty_peek() {
-        let empty = Heap::<i32>::new();
-        assert!(empty.peek().is_none());
     }
 }

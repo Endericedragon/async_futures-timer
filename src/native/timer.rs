@@ -1,12 +1,12 @@
-use std::fmt;
-use std::pin::Pin;
-use std::sync::atomic::Ordering::SeqCst;
-use std::sync::atomic::{AtomicPtr, AtomicUsize};
-use std::sync::{Arc, Mutex, Weak};
-use std::task::{Context, Poll};
-use std::time::Instant;
+use core::fmt;
+use core::pin::Pin;
+use async_std::sync::atomic::Ordering::SeqCst;
+use async_std::sync::atomic::{AtomicPtr, AtomicUsize};
+use async_std::sync::{Arc, Mutex, Weak};
+use core::task::{Context, Poll};
+use async_std::time::Instant;
 
-use std::future::Future;
+use core::future::Future;
 
 use super::AtomicWaker;
 use super::{global, ArcList, Heap, HeapTimer, Node, Slot};
@@ -216,7 +216,7 @@ impl Default for Timer {
 }
 
 static HANDLE_FALLBACK: AtomicPtr<Inner> = AtomicPtr::new(EMPTY_HANDLE);
-const EMPTY_HANDLE: *mut Inner = std::ptr::null_mut();
+const EMPTY_HANDLE: *mut Inner = core::ptr::null_mut();
 
 /// Error returned from `TimerHandle::set_fallback`.
 #[derive(Clone, Debug)]
