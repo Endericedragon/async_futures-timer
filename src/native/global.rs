@@ -1,3 +1,5 @@
+extern crate alloc;
+
 use core::future::Future;
 use async_std::io;
 use core::mem::{self, ManuallyDrop};
@@ -8,6 +10,7 @@ use core::task::{Context, RawWaker, RawWakerVTable, Waker};
 use async_std::thread;
 use async_std::thread::Thread;
 use async_std::time::Instant;
+use alloc::borrow::ToOwned;
 
 use super::{Timer, TimerHandle};
 
@@ -22,10 +25,16 @@ impl HelperThread {
         let timer = Timer::new();
         let timer_handle = timer.handle();
         let done = Arc::new(AtomicBool::new(false));
-        let done2 = done.clone();
+        // let done2 = done.clone();
+        let done2 = Arc::clone(&done);
+        // let thread = thread::Builder::new()
+        //     .name("futures-timer".to_owned())
+        //     .spawn(move || run(timer, done2))?;
         let thread = thread::Builder::new()
             .name("futures-timer".to_owned())
-            .spawn(move || run(timer, done2))?;
+            .spawn(async {
+                move || run(timer, done2);
+            })?;
 
         Ok(HelperThread {
             thread: Some(thread),

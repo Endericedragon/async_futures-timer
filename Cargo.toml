@@ -13,4 +13,4 @@ Timeouts for futures.
 """
 
 [dependencies]
-async_std = { path = "../async_std" }
+async_std = { path = "../../modules/async_std", features = ["irq", "multitask", "alloc", "fs"] }
